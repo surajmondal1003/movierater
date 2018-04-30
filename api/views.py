@@ -11,11 +11,14 @@ from api.serializers import (
     MovieSerializer,
     RatingSerializer)
 
+
 from rest_framework.permissions import IsAuthenticated,IsAdminUser,IsAuthenticatedOrReadOnly
 from rest_framework.authentication import TokenAuthentication,SessionAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from api.pagination import RatingLimitOffestpagination,RatingPageNumberPagination
+
 
 
 
@@ -54,8 +57,9 @@ class MovieViewSet(viewsets.ModelViewSet):
 class RatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    pagination_class = RatingPageNumberPagination
 
 
 
@@ -108,6 +112,10 @@ class CreateRating(APIView):
         else:
             response={'message':'You need to pass All parameters'}
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 
 

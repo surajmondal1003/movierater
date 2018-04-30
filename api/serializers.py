@@ -4,16 +4,12 @@ from rest_framework.serializers import ModelSerializer
 from api.models import Movie,Rating
 from rest_framework.validators import UniqueValidator
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ( 'id','username', 'email')
-        extra_kwargs={'password':{'write_only':True,'required':True}}
+        fields = ( 'id','username', 'email','url')
 
-        def create(self,validated_data):
-            user=User.objects.create(**validated_data)
-
-            return user
 
 class UserCreateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -46,20 +42,16 @@ class UserLoginSerializer(ModelSerializer):
 
         ]
 
-class MovieSerializer(ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = [
-            'id',
-            'title',
-            'description',
-            'avg_rating',
-            'no_of_ratings'
+
+# def restrict_rating(value):
+#     raise serializers.ValidationError("You are no eligible for the job")
 
 
-        ]
 
 class RatingSerializer(ModelSerializer):
+
+    #stars=serializers.IntegerField(validators=[restrict_rating])
+
     class Meta:
         model = Rating
         fields = [
@@ -67,5 +59,26 @@ class RatingSerializer(ModelSerializer):
             'user',
             'movie',
 
-
         ]
+
+
+class MovieSerializer(ModelSerializer):
+    movie_ratings = RatingSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = [
+
+            'id',
+            'title',
+            'description',
+            'avg_rating',
+            'no_of_ratings',
+            'movie_ratings'
+        ]
+
+
+
+
+
+
