@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import viewsets,status
 from api.serializers import (
     UserSerializer,
+    UserCreateSerializer,
     UserLoginSerializer,
     MovieSerializer,
     RatingSerializer)
@@ -15,8 +16,7 @@ from rest_framework.authentication import TokenAuthentication,SessionAuthenticat
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from rest_framework import renderers
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -57,31 +57,22 @@ class RatingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
-    # @action(methods=['post'],detail=True, renderer_classes=[renderers.StaticHTMLRenderer])
-    # def rate_movie(self,request):
-    #     if 'movie' in request.data and 'user' in request.data and 'stars' in request.data:
-    #         movie=Movie.objects.get(id=request.data['movie'])
-    #         user=User.objects.get(id=request.data['user'])
-    #         stars=request.data['stars']
-    #
-    #         try:
-    #             rating=Rating.objects.get(movie=movie.id,user=user.id)
-    #             rating.stars=stars
-    #             rating.save()
-    #             serializer=MovieSerializer(movie,many=True)
-    #             response={'message':'Rating Updated'}
-    #             return Response(response, status=status.HTTP_200_OK)
-    #         except:
-    #             Rating.objects.create(movie=movie.id,user=user.id,stars=stars)
-    #             serializer = MovieSerializer(movie, many=True)
-    #             response = {'message': 'Rating Created'}
-    #             return Response(response, status=status.HTTP_200_OK)
-    #
-    #
-    #
-    #     else:
-    #         response={'message':'You need to pass All parameters'}
-    #         return Response(response,status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserCreate(APIView):
+    """
+    Creates the user.
+    """
+
+    def post(self, request, format='json'):
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CreateRating(APIView):

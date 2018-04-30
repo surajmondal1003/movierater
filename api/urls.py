@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework import routers
 from api import views
 from django.conf.urls import url, include
-from .views import CustomObtainAuthToken,CreateRating
+from .views import CustomObtainAuthToken,CreateRating,UserCreate
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -18,5 +18,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('authentication', CustomObtainAuthToken.as_view()),
     path('create_rating',views.CreateRating.as_view()),
+    path('create_user',views.UserCreate.as_view()),
 
 ]
