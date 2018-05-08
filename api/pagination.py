@@ -7,4 +7,4 @@ class RatingLimitOffestpagination(LimitOffsetPagination):
     max_limit = 10
 
 class RatingPageNumberPagination(PageNumberPagination):
-    page_size = 1
+    page_size = 10

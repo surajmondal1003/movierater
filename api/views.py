@@ -4,12 +4,15 @@ from django.contrib.auth.models import User
 from api.models import Movie,Rating
 from rest_framework.views import APIView
 from rest_framework import viewsets,status
+from rest_framework.generics import ListAPIView,GenericAPIView,RetrieveAPIView
 from api.serializers import (
     UserSerializer,
     UserCreateSerializer,
     UserLoginSerializer,
     MovieSerializer,
-    RatingSerializer)
+    RatingSerializer,
+    SpecificRatingSerializer
+)
 
 
 from rest_framework.permissions import IsAuthenticated,IsAdminUser,IsAuthenticatedOrReadOnly
@@ -60,6 +63,21 @@ class RatingViewSet(viewsets.ModelViewSet):
     #permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     pagination_class = RatingPageNumberPagination
+
+
+
+class SpecificMovieRatingView(ListAPIView):
+    #queryset = Rating.objects.all()
+    serializer_class = SpecificRatingSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    pagination_class = RatingPageNumberPagination
+
+    def get_queryset(self):
+        movie=self.kwargs['movie']
+        return Rating.objects.filter(movie_id=movie)
+
+
 
 
 

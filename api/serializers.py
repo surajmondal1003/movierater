@@ -61,6 +61,12 @@ class RatingSerializer(ModelSerializer):
 
         ]
 
+class SpecificRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ['stars','user','movie',]
+
+
 
 class MovieSerializer(ModelSerializer):
     movie_ratings = RatingSerializer(many=True, read_only=True)
